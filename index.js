@@ -6,16 +6,15 @@ import { calculateTokenExpireTime } from "./utils";
  */
 function getCookie(cookieName) {
     const name = cookieName + "=";
-    const cookieDecoded = decodeURIComponent(document.cookie);
-    const cookieArray = cookieDecoded.split('; ');
-    let res;
-    cookieArray.forEach(cookie => {
-        if (cookie.indexOf(name) === 0)
-            res = cookie.substring(name.length);
-    })
-    return res;
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+        const trimmedCookie = cookie.trim();
+        if (trimmedCookie.startsWith(name)) {
+            return trimmedCookie.substring(name.length);
+        }
+    }
+    return null;
 }
-
 /**
  * 
  * @param {string} cookieName 
