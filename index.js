@@ -1,4 +1,7 @@
-
+/**
+ * @param {string} cookieName
+ * @return {string}
+ */
 function getCookie(cookieName) {
     const name = cookieName + "=";
     const cookieDecoded = decodeURIComponent(document.cookie);
@@ -13,10 +16,22 @@ function getCookie(cookieName) {
 
 const milliSecondsInDay = 24 * 60 * 60 * 1000
 
+/**
+ * @param {number} expireDays
+ * @param {Date} date
+ * @return {number}
+ */
 const calculateTokenExpireTime = (expireDays, date) => expireDays * milliSecondsInDay + date.getTime()
 
+
+/**
+ * 
+ * @param {string} cookieName 
+ * @param {any} cookieValue 
+ * @param {number} expireDays
+ */
 function setCookie(cookieName, cookieValue, expireDays) {
-    let date = new Date();
+    const date = new Date();
     date.setTime(calculateTokenExpireTime(expireDays, date));
     const expires = "Expires=" + date.toUTCString();
     document.cookie = `${cookieName}=${JSON.stringify(cookieValue)}; ${expires}; Path=/; Domain=.start2impact.it`;
