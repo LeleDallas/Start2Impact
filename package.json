@@ -1,0 +1,17 @@
+{
+  "name": "start2impact",
+  "version": "1.0.0",
+  "description": "Node js for Start2Impact interview",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "LeleDallas",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.33.0",
+    "sequelize-cli": "^6.6.1"
+  }
+}
