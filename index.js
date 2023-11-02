@@ -21,6 +21,7 @@ function getCookie(cookieName) {
  * @param {string} cookieName 
  * @param {any} cookieValue 
  * @param {number} expireDays
+* @return {void}
  */
 function setCookie(cookieName, cookieValue, expireDays) {
     const date = new Date();
@@ -29,23 +30,41 @@ function setCookie(cookieName, cookieValue, expireDays) {
     document.cookie = `${cookieName}=${JSON.stringify(cookieValue)}; ${expires}; Path=/; Domain=.start2impact.it`;
 }
 
-function setUtmCookie() {
+/**
+ * @param {number} [expireDays=30]
+ * @return {void}
+ */
+function setUtmCookie(expireDays = 30) {
     const cookieName = 'utm_parameters';
-    if (getCookie(cookieName) != undefined) return;
     const url = new URL(window.location);
     const search_params = url.searchParams;
     const utm_campaign = search_params.get('utm_campaign');
     const utm_medium = search_params.get('utm_medium');
     const utm_source = search_params.get('utm_source');
-    const expireDays = 30;
     const landed_at = new Date().toLocaleString();
-    const cookieValue = { utm_campaign, utm_medium, utm_source, landed_at };
-    if (utm_campaign || utm_medium || utm_source) {
-        if (!(utm_campaign && utm_medium && utm_source)) {
-            console.warn('UTM parameters missing:', { utm_campaign, utm_medium, utm_source });
-        }
+    const existingCookie = JSON.parse(getCookie(cookieName) || '{}');
+
+    if ((utm_campaign || utm_medium || utm_source)
+        && (!existingCookie.utm_campaign ||
+            existingCookie.utm_campaign !== utm_campaign ||
+            existingCookie.utm_medium !== utm_medium ||
+            existingCookie.utm_source !== utm_source
+        )) {
+        const cookieValue = {
+            utm_campaign,
+            utm_medium,
+            utm_source,
+            landed_at
+        };
         setCookie(cookieName, cookieValue, expireDays);
     }
+
+    const referrer = document.referrer;
+    if (referrer && referrer !== existingCookie.referrer) {
+        existingCookie.referrer = referrer;
+        setCookie(cookieName, existingCookie, expireDays);
+    }
 }
+
 
 setUtmCookie();
