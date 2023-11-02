@@ -38,30 +38,23 @@ function setUtmCookie(expireDays = 30) {
     const cookieName = 'utm_parameters';
     const url = new URL(window.location);
     const search_params = url.searchParams;
-    const utm_campaign = search_params.get('utm_campaign');
-    const utm_medium = search_params.get('utm_medium');
-    const utm_source = search_params.get('utm_source');
-    const landed_at = new Date().toLocaleString();
     const existingCookie = JSON.parse(getCookie(cookieName) || '{}');
+    const landed_at = new Date().toLocaleString();
+    let updated = false;
+    search_params.forEach((value, key) => {
+        if (key.startsWith('utm_') && value !== existingCookie[key]) {
+            existingCookie[key] = value;
+            updated = true;
+        }
+    });
 
-    if ((utm_campaign || utm_medium || utm_source)
-        && (!existingCookie.utm_campaign ||
-            existingCookie.utm_campaign !== utm_campaign ||
-            existingCookie.utm_medium !== utm_medium ||
-            existingCookie.utm_source !== utm_source
-        )) {
-        const cookieValue = {
-            utm_campaign,
-            utm_medium,
-            utm_source,
-            landed_at
-        };
-        setCookie(cookieName, cookieValue, expireDays);
+    if (document.referrer && document.referrer !== existingCookie.referrer) {
+        existingCookie.referrer = document.referrer;
+        updated = true;
     }
 
-    const referrer = document.referrer;
-    if (referrer && referrer !== existingCookie.referrer) {
-        existingCookie.referrer = referrer;
+    if (updated) {
+        existingCookie.landed_at = landed_at;
         setCookie(cookieName, existingCookie, expireDays);
     }
 }
