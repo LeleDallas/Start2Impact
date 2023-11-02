@@ -1,3 +1,5 @@
+import { calculateTokenExpireTime } from "./utils";
+
 /**
  * @param {string} cookieName
  * @return {string}
@@ -13,16 +15,6 @@ function getCookie(cookieName) {
     })
     return res;
 }
-
-const milliSecondsInDay = 24 * 60 * 60 * 1000
-
-/**
- * @param {number} expireDays
- * @param {Date} date
- * @return {number}
- */
-const calculateTokenExpireTime = (expireDays, date) => expireDays * milliSecondsInDay + date.getTime()
-
 
 /**
  * 
@@ -46,13 +38,13 @@ function setUtmCookie() {
     const utm_medium = search_params.get('utm_medium');
     const utm_source = search_params.get('utm_source');
     const expireDays = 30;
-    const landed_at = new Date().toLocaleString(); //.toString();
-    const cValue = { utm_campaign, utm_medium, utm_source, landed_at };
+    const landed_at = new Date().toLocaleString();
+    const cookieValue = { utm_campaign, utm_medium, utm_source, landed_at };
     if (utm_campaign || utm_medium || utm_source) {
         if (!(utm_campaign && utm_medium && utm_source)) {
             console.warn('UTM parameters missing:', { utm_campaign, utm_medium, utm_source });
         }
-        setCookie(cookieName, cValue, expireDays);
+        setCookie(cookieName, cookieValue, expireDays);
     }
 }
 
